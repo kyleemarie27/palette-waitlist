@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palette — Know Your Colors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #F5F0E8;
+      --red:      #C8392B;
+      --espresso: #2C1A0E;
+      --olive:    #A8B832;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--espresso);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+    }
+
+    .wordmark {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 17px;
+      color: var(--espresso);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .wordmark span { color: var(--olive); }
+
+    .nav-pill {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--espresso);
+      opacity: 0.45;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 24px 80px;
+      text-align: center;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 44px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(44,26,14,0.1);
+    }
+
+    .s1 { background: #8B4513; }
+    .s2 { background: #C8392B; }
+    .s3 { background: #D2691E; }
+    .s4 { background: #A0522D; }
+    .s5 { background: #CD853F; }
+    .s6 { background: #A8B832; }
+    .s7 { background: #6B4226; }
+    .s8 { background: #B8860B; }
+    .s9 { background: #8B6914; }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 18px;
+      animation: fadeUp 0.8s 0.08s ease both;
+      opacity: 0;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(54px, 9vw, 108px);
+      line-height: 0.93;
+      letter-spacing: -0.02em;
+      color: var(--espresso);
+      margin-bottom: 28px;
+      animation: fadeUp 0.9s 0.14s ease both;
+      opacity: 0;
+    }
+
+    h1 em { color: var(--red); font-style: italic; }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.2vw, 19px);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--espresso);
+      opacity: 0.72;
+      max-width: 520px;
+      margin: 0 auto 40px;
+      animation: fadeUp 0.9s 0.22s ease both;
+      opacity: 0;
+    }
+
+    /* ── FORM ── */
+    .form-wrap {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp 1s 0.3s ease both;
+      opacity: 0;
+    }
+
+    .form-row {
+      display: flex;
+      border: 1.5px solid var(--espresso);
+      border-radius: 2px;
+      overflow: hidden;
+      background: var(--cream);
+      transition: box-shadow 0.2s;
+    }
+
+    .form-row:focus-within {
+      box-shadow: 4px 4px 0 var(--espresso);
+    }
+
+    .form-row input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 16px 20px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      color: var(--espresso);
+    }
+
+    .form-row input::placeholder { opacity: 0.38; }
+
+    .form-row button {
+      background: var(--espresso);
+      color: var(--cream);
+      border: none;
+      padding: 16px 22px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .form-row button:hover:not(:disabled) { background: var(--red); }
+    .form-row button:disabled { opacity: 0.6; cursor: default; }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--espresso);
+      opacity: 0.38;
+      margin-top: 11px;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    .error-msg {
+      display: none;
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .success-msg {
+      display: none;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 21px;
+      color: var(--espresso);
+      text-align: center;
+      padding: 18px 0;
+    }
+
+    .success-msg span { color: var(--red); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .divider-line { flex: 1; height: 1px; background: var(--espresso); opacity: 0.1; }
+    .divider-mark { font-size: 13px; color: var(--olive); opacity: 0.65; }
+
+    /* ── STORY ── */
+    .story {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 72px auto;
+      padding: 0 32px;
+    }
+
+    .story-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--espresso);
+      opacity: 0.38;
+      margin-bottom: 18px;
+    }
+
+    .story h2 {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(26px, 4vw, 36px);
+      line-height: 1.2;
+      color: var(--espresso);
+      margin-bottom: 22px;
+    }
+
+    .story p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.78;
+      color: var(--espresso);
+      opacity: 0.78;
+      margin-bottom: 16px;
+    }
+
+    .story strong { font-weight: 600; }
+
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      margin: 32px 0;
+      padding: 4px 0 4px 22px;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 21px;
+      font-weight: 300;
+      line-height: 1.45;
+      color: var(--espresso);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      position: relative;
+      z-index: 1;
+      background: var(--espresso);
+      padding: 80px 32px;
+      margin: 64px 0;
+    }
+
+    .how-inner { max-width: 720px; margin: 0 auto; }
+
+    .how-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--olive);
+      margin-bottom: 14px;
+    }
+
+    .how h2 {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--cream);
+      margin-bottom: 48px;
+      line-height: 1.15;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 36px;
+    }
+
+    .step-num {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 46px;
+      font-weight: 300;
+      color: var(--red);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .step-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--cream);
+      opacity: 0.6;
+    }
+
+    /* ── BYLINE ── */
+    .byline {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 0 auto 80px;
+      padding: 0 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .byline-dot {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: var(--cream);
+      margin-top: 3px;
+    }
+
+    .byline-text p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.72;
+      color: var(--espresso);
+      opacity: 0.72;
+      margin-bottom: 6px;
+    }
+
+    .byline-text .name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(44,26,14,0.1);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-right {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--espresso);
+      opacity: 0.35;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 18px 24px; }
+      .form-row { flex-direction: column; }
+      .form-row button { padding: 14px; text-align: center; }
+      footer { flex-direction: column; padding: 24px; }
+      .byline { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="wordmark">Palette<span>.</span></span>
+    <span class="nav-pill">Early Access</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="swatches" aria-hidden="true">
+      <div class="swatch s1"></div>
+      <div class="swatch s2"></div>
+      <div class="swatch s3"></div>
+      <div class="swatch s4"></div>
+      <div class="swatch s5"></div>
+      <div class="swatch s6"></div>
+      <div class="swatch s7"></div>
+      <div class="swatch s8"></div>
+      <div class="swatch s9"></div>
+    </div>
+
+    <p class="eyebrow">Know Your Colors · Early Access</p>
+
+    <h1>Your colors,<br><em>finally</em> confirmed.</h1>
+
+    <p class="hero-sub">
+      High-confidence color analysis using AI, without the $180 appointment.
+      Built by a woman who did both, and realized the right prompt got her 80% of the way there.
+    </p>
+
+    <div class="form-wrap">
+      <div class="form-row" id="formRow">
+        <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
+        <button id="submitBtn" onclick="handleSubmit()">Join waitlist</button>
+      </div>
+      <p class="error-msg" id="errorMsg">Please enter a valid email address.</p>
+      <div class="success-msg" id="successMsg">
+        You're in. <span>We'll be in touch.</span> 🍂
+      </div>
+      <p class="form-note" id="formNote">No spam. Just early access when we're ready.</p>
+    </div>
+  </section>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-mark">✦</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- STORY -->
+  <section class="story">
+    <p class="story-eyebrow">The backstory</p>
+    <h2>I spent $180 to confirm what AI had already told me.</h2>
+
+    <p>
+      I booked a one-hour color analysis in Japantown, went with a friend, tipped $30, and sat in a fluorescent shop front while a professional draped swatches across my shoulders. Her verdict: dark autumn. AI's verdict, two weeks earlier: dark autumn.
+    </p>
+
+    <div class="pull-quote">
+      "If I could get that result with the right prompt and the right photos, why isn't this more accessible?"
+    </div>
+
+    <p>
+      Turns out AI color analysis is frequently wrong — but not because AI can't do it. Because most people don't know how to ask. <strong>The right set of photos, paired with a well-constructed prompt, gets you most of the way to a professional-grade result.</strong> I know this because I've now done both.
+    </p>
+
+    <p>
+      Palette is for women who don't live near a Japantown. Who can't justify the appointment. Who want to know their colors so they can stop second-guessing every purchase, and start building a wardrobe that actually works.
+    </p>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="how-inner">
+      <p class="how-eyebrow">How it works</p>
+      <h2>Three steps to your palette.</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-title">Upload your photos</div>
+          <div class="step-body">We guide you through exactly which photos to take for the most accurate read — lighting, angles, no filter. We'll walk you through it.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-title">AI does the analysis</div>
+          <div class="step-body">Your photos run through a trained color analysis framework. Not a generic chatbot answer — a structured, high-confidence result.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-title">Get your palette</div>
+          <div class="step-body">Your season, your shades, and what to do with them — specific, shoppable, and actually useful for getting dressed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BYLINE -->
+  <section class="byline">
+    <div class="byline-dot">K</div>
+    <div class="byline-text">
+      <p>
+        I'm Kylee — a product marketer, solo founder, and the woman who vibe-coded this app after confirming her autumn colors twice. I built it because the right prompt got me 80% of a $180 result, and that felt like something every woman deserved access to.
+      </p>
+      <p class="name">Kylee Lessard &nbsp;·&nbsp; Builder, Palette</p>
+    </div>
+  </section>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-mark">✦</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="wordmark">Palette<span>.</span></span>
+    <span class="footer-right">© 2026 Kylee Lessard</span>
+  </footer>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjbyx7S2xHrQrDkCbsiizp_fKBT_z_tP-S5_RPZiQcBdPb_uFeWFyZSCW45hjdInn5/exec';
+
+    async function handleSubmit() {
+      const input     = document.getElementById('emailInput');
+      const btn       = document.getElementById('submitBtn');
+      const formRow   = document.getElementById('formRow');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg  = document.getElementById('errorMsg');
+      const formNote  = document.getElementById('formNote');
+      const val       = input.value.trim();
+      const emailRe   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      errorMsg.style.display = 'none';
+      input.style.outline = '';
+
+      if (!emailRe.test(val)) {
+        errorMsg.style.display = 'block';
+        input.style.outline = '2px solid #C8392B';
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: val })
+        });
+
+        formRow.style.display = 'none';
+        errorMsg.style.display = 'none';
+        formNote.style.display = 'none';
+        successMsg.style.display = 'block';
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Join waitlist';
+        errorMsg.textContent = 'Something went wrong — please try again.';
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    document.getElementById('emailInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleSubmit();
+    });
+  </script>
+</body>
+</html>
